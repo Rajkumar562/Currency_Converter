@@ -9,7 +9,6 @@ function useCurrencyInfo(currency) {
       .then((res) => res.json()) // converting data is into json because generally api gives output in string
       .then((res) => setData(res[currency]));
   }, [currency]);
-  console.log(data);
   return data;
 }
 

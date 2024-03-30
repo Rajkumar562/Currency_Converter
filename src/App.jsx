@@ -1,50 +1,46 @@
-import {useState} from 'react'
-import {InputBox} from './components'
-import useCurrencyInfo from './hooks/useCurrencyInfo'
-import './App.css'
+import { InputBox } from "./components";
+import useCurrencyInfo from "./hooks/useCurrencyInfo";
+import { useState } from "react";
 
 function App() {
-  const [amount, setAmount] = useState( 0 )
-  const [from, setFrom] = useState( "usd" )
-  const [to, setTo] = useState( "inr" )
-  const [convertedAmount, setConvertedAmount] = useState( 0 )
+  const [fromCurrency, setFromCurrency] = useState("usd");
+  const [toCurrency, setToCurrency] = useState("inr");
+  const [amount, setAmount] = useState(0);
+  const [convertedAmount, setConvertedAmount] = useState(0);
 
-  const currencyInfo = useCurrencyInfo( from )
-  const options = Object.keys( currencyInfo )
+  const currencyInfo = useCurrencyInfo(fromCurrency);
+  const options = Object.keys(currencyInfo);
 
+  const convert = () => setConvertedAmount(amount * currencyInfo[toCurrency]);
   const swap = () => {
-    setFrom( to )
-    setTo( from )
-    setAmount( convertedAmount )
-    setConvertedAmount( amount )
-  }
-  const convert = () => {
-    setConvertedAmount( amount * currencyInfo[to] )
-  }
-
+    setFromCurrency(toCurrency);
+    setToCurrency(fromCurrency);
+    setAmount(convertedAmount);
+    setConvertedAmount(amount);
+  };
   return (
     <div
-      className="w-full h-screen flex flex-wrap justify-center items-center bg-cover"
+      className="w-full h-screen flex flex-wrap justify-center items-center bg-cover bg-no-repeat"
       style={{
-        backgroundImage: `url('https://images.pexels.com/photos/3532540/pexels-photo-3532540.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2')`,
+        backgroundImage: `url(${"https://images.unsplash.com/photo-1543083115-638c32cd3d58?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"})`,
       }}
     >
       <div className="w-full">
         <div className="w-full max-w-md mx-auto border border-gray-60 rounded-lg p-5 backdrop-blur-sm bg-white/30">
           <form
-            onSubmit={( e ) => {
+            onSubmit={(e) => {
               e.preventDefault();
-              convert()
+              convert();
             }}
           >
             <div className="w-full mb-1">
               <InputBox
                 label="From"
+                currency={fromCurrency}
                 amount={amount}
+                onAmountChange={(amount) => setAmount(amount)}
+                onCurrencyChange={(fromCurrency) => setFromCurrency(fromCurrency)}
                 currencyOptions={options}
-                onCurrencyChange={( currency ) => setFrom( currency )}
-                selectCurrency={from}
-                onAmountChange={( amount ) => setAmount( amount )}
               />
             </div>
             <div className="relative w-full h-0.5">
@@ -59,15 +55,16 @@ function App() {
             <div className="w-full mt-1 mb-4">
               <InputBox
                 label="To"
+                currency={toCurrency}
                 amount={convertedAmount}
+                onAmountChange={(convertedAmount) => setConvertedAmount(convertedAmount)}
+                onCurrencyChange={(toCurrency) => setToCurrency(toCurrency)}
                 currencyOptions={options}
-                onCurrencyChange={( currency ) => setTo( currency )}
-                selectCurrency={to}
                 amountDisable
               />
             </div>
             <button type="submit" className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg">
-              Convert {from.toUpperCase()} to {to.toUpperCase()}
+              {`Convert ${fromCurrency.toUpperCase()} to ${toCurrency.toUpperCase()}`}
             </button>
           </form>
         </div>
@@ -76,4 +73,4 @@ function App() {
   );
 }
 
-export default App
+export default App;
